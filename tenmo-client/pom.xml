@@ -20,6 +20,11 @@
     </properties>
     <!-- project properties -->
     <dependencies>
+        <dependency>
+ 			<groupId>junit</groupId>
+ 			<artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
         <!-- Spring Core -->
         <dependency>
             <groupId>org.springframework</groupId>
