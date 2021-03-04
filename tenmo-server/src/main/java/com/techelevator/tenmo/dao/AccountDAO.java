@@ -9,7 +9,7 @@ public interface AccountDAO {
 
 	
 	BigDecimal getBalance(long userId);
-	void updateBalance(BigDecimal amount, int fromUser, int toUser);
+	void updateBalance(BigDecimal amount, int userId);
 	
 	
 

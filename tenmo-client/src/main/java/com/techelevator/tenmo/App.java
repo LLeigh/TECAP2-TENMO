@@ -1,7 +1,12 @@
 package com.techelevator.tenmo;
 
+import java.math.BigDecimal;
+
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
+import com.techelevator.tenmo.services.AccountServiceException;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
@@ -25,6 +30,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private AccountService accountService = new AccountService(API_BASE_URL);
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -34,6 +40,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     public App(ConsoleService console, AuthenticationService authenticationService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		
 	}
 
 	public void run() {
@@ -68,8 +75,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
 		
+		
+		try {
+		BigDecimal balance = accountService.getBalance(currentUser.getUser().getId());
+		System.out.println(balance);
+		} catch (AccountServiceException e) {
+			
+		}
 	}
 
 	private void viewTransferHistory() {
@@ -77,14 +90,16 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		
 	}
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		//if amount < balance
+		
+	}
+	
+	
+	//OPTIONAL METHODS
+	private void viewPendingRequests() {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -140,12 +155,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			UserCredentials credentials = collectUserCredentials();
 		    try {
 				currentUser = authenticationService.login(credentials);
+				AccountService.AUTH_TOKEN = currentUser.getToken();
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");
 			}
 		}
 	}
+	
 	
 	private UserCredentials collectUserCredentials() {
 		String username = console.getUserInput("Username");
