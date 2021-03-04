@@ -12,10 +12,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.tenmo.dao.AccountDAO;
 import com.techelevator.tenmo.dao.AccountSqlDAO;
+import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
+import com.techelevator.tenmo.model.User;
 
 public class AccountSqlDAOIntegrationTest {
 	
@@ -68,40 +71,50 @@ public class AccountSqlDAOIntegrationTest {
 	
 	@Test
 	public void does_transfer_update_from_user_balance() {
-		String userOne = "INSERT INTO accounts (user_id, balance) VALUES (22, 5000)";
+		
+		String userOne = "INSERT INTO users (username, password_hash) VALUES ('Bob', 'tebucks')";
 		jdbcTemplate.update(userOne);
 		
-		String userTwo = "INSERT INTO accounts (user_id, balance) VALUES (33, 1)";
-		jdbcTemplate.update(userTwo);
+		String accountOne = "INSERT INTO accounts (user_id, balance) VALUES ((SELECT user_id FROM users WHERE username = 'Bob'), 5000)";
+		jdbcTemplate.update(accountOne);
+		
+		String statement = "SELECT user_id FROM users WHERE username = 'Bob'";
+		SqlRowSet oneRow = jdbcTemplate.queryForRowSet(statement);
+		oneRow.next();
+		int id = oneRow.getInt("user_id");
 		
 		BigDecimal amount = new BigDecimal(200);
 		
+		BigDecimal actualBefore = dao.getBalance(id);
+		BigDecimal expectedBefore = new BigDecimal("5000.00");
+		assertEquals(expectedBefore, actualBefore);
 		
-		dao.updateBalance(amount, 22, 33);
+		dao.updateBalance(amount, id);
 		
-		BigDecimal total = dao.getBalance(22);
-		
-		assertEquals(4800, total);
+		BigDecimal actualAfter = dao.getBalance(id);
+		BigDecimal expectedAfter = new BigDecimal("5200.00");
+		assertEquals(expectedAfter, actualAfter);
 
 	}
 	
 	@Test
-	public void does_transfer_update_to_user_balance() {
-		String userOne = "INSERT INTO accounts (user_id, balance) VALUES (22, 5000)";
-		jdbcTemplate.update(userOne);
+	public void does_create_user_set_balance_to_1000() {
+		User user = new User();
+		UserSqlDAO userDAO = new UserSqlDAO(jdbcTemplate);
 		
-		String userTwo = "INSERT INTO accounts (user_id, balance) VALUES (33, 1)";
-		jdbcTemplate.update(userTwo);
+		userDAO.create("Oprah", "password");
+		
+		String statement = "SELECT user_id FROM users WHERE username = 'Oprah'";
+		SqlRowSet oneRow = jdbcTemplate.queryForRowSet(statement);
+		oneRow.next();
+		int id = oneRow.getInt("user_id");
 		
 		BigDecimal amount = new BigDecimal(200);
 		
-		
-		dao.updateBalance(amount, 22, 33);
-		
-		BigDecimal total = dao.getBalance(33);
-		
-		assertEquals(201, total);
-
+		BigDecimal actual = dao.getBalance(id);
+		BigDecimal expected = new BigDecimal("1000.00");
+		assertEquals(expected, actual);
 	}
+	
 
 }
