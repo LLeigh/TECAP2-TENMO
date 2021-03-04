@@ -84,6 +84,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+		//if amount < balance
 		
 	}
 
