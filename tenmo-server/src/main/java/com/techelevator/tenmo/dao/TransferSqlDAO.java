@@ -54,8 +54,6 @@ public class TransferSqlDAO implements TransferDAO {
 	public boolean sendBucks(int accountFrom, int accountTo, BigDecimal amount) {//subtracts from 'from user', adds to 'to user'
 		boolean bucksSent = false;
 
-				
-		//insert into transfer
 		String sqlCreateSendTransfer = "INSERT INTO transfers " +
 				"(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
 				"VALUES (2, 2, ?, ?, ?);";

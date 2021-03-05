@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +28,16 @@ public class TransferService {
 	
 	public List<Transfer> viewTransfers(long id) throws TransferServiceException {
 		List<Transfer> transfers = null;
-		try { 
-			transfers = restTemplate.exchange(BASE_URL + "transfers/id", makeAuthEntity(), Transfer.class).getBody();
+//		Transfer[] transfers = null;
+			
+		try {
+//			transfers = restTemplate.getForEntity(BASE_URL + "transfers" + "?userId=" + id, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+			
+			Transfer[] transferArray = 
+					restTemplate.exchange(BASE_URL + "transfers" + "?userId=" + id, HttpMethod.GET, makeAuthEntity(), Transfer[].class).getBody();
+						for(Transfer t : transferArray) {
+						transfers.add(t);
+						}
 			
 		} catch (RestClientResponseException ex) {
 			throw new TransferServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
@@ -48,9 +57,21 @@ public class TransferService {
 	}
 	
 	
-	boolean sendBucks(int accountFrom, int accountTo, BigDecimal amount) throws TransferServiceException {
+	public boolean sendBucks(int accountFrom, int accountTo, BigDecimal amount) throws TransferServiceException {
 		//check that account balance is great than transfer amount
+		boolean canSendBucks = false;
+		Transfer transfer = new Transfer();
 		
+		try {
+		      canSendBucks = restTemplate
+              .exchange(BASE_URL + "accounts" + "?accountFrom=" + accountFrom + "&?accountTo=" + accountTo + 
+            		  "&?amount=" + amount, HttpMethod.POST, makeTransferEntity(transfer), boolean.class)
+              .getBody();
+			
+		} catch (RestClientResponseException ex) {
+			throw new TransferServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());		
+		}
+		return canSendBucks;
 	}
 	
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
@@ -61,11 +82,7 @@ public class TransferService {
         return entity;
     }
 
-    /**
-     * Returns an {HttpEntity} with the `Authorization: Bearer:` header
-     *
-     * @return {HttpEntity}
-     */
+
     private HttpEntity makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(AUTH_TOKEN);
