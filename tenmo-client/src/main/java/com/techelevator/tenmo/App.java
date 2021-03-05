@@ -9,6 +9,8 @@ import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AccountServiceException;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.services.TransferServiceException;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -31,6 +33,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private ConsoleService console;
     private AuthenticationService authenticationService;
     private AccountService accountService = new AccountService(API_BASE_URL);
+    private TransferService transferService = new TransferService(API_BASE_URL);
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -91,8 +94,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		//if amount < balance
+		console.getUserInputInteger("Please select user to send bucks to");
+		
+		try {
+			
+			boolean canSendBucks = transferService.sendBucks(currentUser.getUser().getId(), otherUser.getId(), amount);
+			
+		} catch (TransferServiceException e) {
+			
+		}
 		
 	}
 	

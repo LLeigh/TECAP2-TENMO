@@ -3,9 +3,12 @@ package com.techelevator.tenmo.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
-import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
 
 @PreAuthorize("isAuthenticated()")
@@ -23,35 +25,33 @@ import com.techelevator.tenmo.model.Transfer;
 public class TransferController {
 
 		private TransferDAO dao;
+		private AccountDAO daoAccount;
 		
 		public TransferController(TransferDAO transferDao) {
 			this.dao = transferDao;
 		}
 		
 		
-		@RequestMapping (path = "/transfers/{id}", method = RequestMethod.GET)
-		public List<Transfer> viewTransfers(@PathVariable long id){
-			
-			List<Transfer> transfersById = dao.viewTransfers(id);
-			
-			return transfersById;
-			
+		@RequestMapping (path = "/{id}", method = RequestMethod.GET)
+		public List<Transfer> viewTransfers(@PathVariable long id){	
+			return dao.viewTransfers(id);			
 		}
 		
-		@RequestMapping (path = "/transfers/{transferId}", method = RequestMethod.GET)
+		@RequestMapping (path = "/{transferId}", method = RequestMethod.GET)
 		public Transfer viewTransferById(@PathVariable int transferId) {
-			
-			Transfer transfer = dao.viewTransferById(transferId);
-			
-			return transfer;
+			return dao.viewTransferById(transferId);
+
 		}
 		
 		@ResponseStatus(HttpStatus.CREATED)
-		@RequestMapping (path = "/transfers", method = RequestMethod.POST)
-		public boolean sendBucks(int accountFrom, int accountTo, BigDecimal amount) {
+		@RequestMapping (path = "", method = RequestMethod.POST)
+		public boolean sendBucks(@RequestParam int accountFrom, @RequestParam int accountTo, @RequestParam BigDecimal amount) {	
+			long userId = (int)accountFrom;
 			
-			return null;
-			
+			if (amount.compareTo(daoAccount.getBalance(userId)) >= 0) { 
+			return dao.sendBucks(accountFrom, accountTo, amount);
+			} 
+			return false;
 		}
 		
 
