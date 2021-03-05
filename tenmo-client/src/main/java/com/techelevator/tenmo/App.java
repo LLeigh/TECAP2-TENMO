@@ -1,8 +1,10 @@
 package com.techelevator.tenmo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
@@ -34,6 +36,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticationService authenticationService;
     private AccountService accountService = new AccountService(API_BASE_URL);
     private TransferService transferService = new TransferService(API_BASE_URL);
+    //add userService
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -78,8 +81,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		
-		
+				
 		try {
 		BigDecimal balance = accountService.getBalance(currentUser.getUser().getId());
 		System.out.println(balance);
@@ -89,16 +91,32 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+		
+		 try {
+		 List<Transfer> userTransfers = transferService.viewTransfers(currentUser.getUser().getId());	 
+		 System.out.println(userTransfers);	 	 
+		 } catch (TransferServiceException e) {
+			 
+		 }
 		
 	}
+	
+	
 
 	private void sendBucks() {
-		console.getUserInputInteger("Please select user to send bucks to");
+		userService.findAll() //return list of users
+		
+		console.getUserInputInteger("Please select user to send money to"); //returns selected integer
+		
+		int toAccountUser = console.getChoiceFromOptions() //takes user input ----> userId (toAccount)
+		
+		String sendAmount = console.getUserInput("How much money would you like to send? ");
+		BigDecimal amount = new BigDecimal(sendAmount); //returns string and puts it in Big Decimal to pass in as amount
+		
 		
 		try {
 			
-			boolean canSendBucks = transferService.sendBucks(currentUser.getUser().getId(), otherUser.getId(), amount);
+			transferService.sendBucks(currentUser.getUser().getId(), toAccountUser, amount);
 			
 		} catch (TransferServiceException e) {
 			
