@@ -13,6 +13,7 @@ import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.tenmo.services.TransferServiceException;
+import com.techelevator.tenmo.services.UserService;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -33,10 +34,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	
     private AuthenticatedUser currentUser;
     private ConsoleService console;
+    private UserService userService = new UserService(API_BASE_URL);
     private AuthenticationService authenticationService;
     private AccountService accountService = new AccountService(API_BASE_URL);
     private TransferService transferService = new TransferService(API_BASE_URL);
-    //add userService
+    
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -93,7 +95,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewTransferHistory() {
 		
 		 try {
-		 List<Transfer> userTransfers = transferService.viewTransfers(currentUser.getUser().getId());	 
+		 List<Transfer> userTransfers = transferService.viewTransfers(currentUser.getUser().getId());	
+		 for (Transfer t: userTransfers) {
+				
+				System.out.println(t);
+			}
 		 System.out.println(userTransfers);	 	 
 		 } catch (TransferServiceException e) {
 			 
@@ -104,23 +110,26 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	
 
 	private void sendBucks() {
-		userService.findAll() //return list of users
-		
-		console.getUserInputInteger("Please select user to send money to"); //returns selected integer
-		
-		int toAccountUser = console.getChoiceFromOptions() //takes user input ----> userId (toAccount)
-		
-		String sendAmount = console.getUserInput("How much money would you like to send? ");
-		BigDecimal amount = new BigDecimal(sendAmount); //returns string and puts it in Big Decimal to pass in as amount
-		
-		
+
 		try {
-			
+	
+			List<User> list = userService.findAll();
+			for (User u: list) {
+				
+				System.out.println(u);
+			}
+			Integer toAccountUser = console.getUserInputInteger("Please select recipient's number"); //takes user input ----> userId (toAccount)
+			String sendAmount = console.getUserInput("How much money would you like to send? ");
+			BigDecimal amount = new BigDecimal(sendAmount); //returns string and puts it in Big Decimal to pass in as amount
 			transferService.sendBucks(currentUser.getUser().getId(), toAccountUser, amount);
+			accountService.updateBalance(amount, toAccountUser);
+			BigDecimal negative = new BigDecimal("-1.00");
+			accountService.updateBalance(amount.multiply(negative), currentUser.getUser().getId());
 			
-		} catch (TransferServiceException e) {
-			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		
 	}
 	
@@ -184,6 +193,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		    try {
 				currentUser = authenticationService.login(credentials);
 				AccountService.AUTH_TOKEN = currentUser.getToken();
+				UserService.AUTH_TOKEN = currentUser.getToken();
+				TransferService.AUTH_TOKEN = currentUser.getToken();
+				
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");

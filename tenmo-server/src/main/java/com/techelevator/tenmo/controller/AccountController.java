@@ -35,7 +35,7 @@ public class AccountController {
 		return dao.getBalance(userId);
 	};
 	
-	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+	@RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
 	public void updateBalance(@RequestParam BigDecimal amount, @PathVariable int userId) throws AccountNotFoundException{
 		dao.updateBalance(amount, userId);
 	};
