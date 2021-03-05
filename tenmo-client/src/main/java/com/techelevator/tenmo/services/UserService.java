@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpEntity;
@@ -26,14 +27,15 @@ public class UserService {
 	  
 	  public List<User> findAll() throws UserServiceException {
 		  
-		  List<User> userList = null;
+		  List<User> userList = new ArrayList<>();
 		  
 		  try {
 			      User [] list = restTemplate
-			              .exchange(BASE_URL + "user", HttpMethod.GET, makeUserEntity(), User [].class)
+			              .exchange(BASE_URL + "user/all", HttpMethod.GET, makeUserEntity(), User [].class)
 			              .getBody();
 			      for(User u : list) {
 						userList.add(u);
+					
 						}
 			   
 			     
@@ -48,7 +50,7 @@ public class UserService {
 		  
 		  try {
 			  user = restTemplate
-	              .exchange(BASE_URL + "user" + "?username=" + username, HttpMethod.GET, makeUserEntity(), User.class)
+	              .exchange(BASE_URL + "user/" + username, HttpMethod.GET, makeUserEntity(), User.class)
 	              .getBody();
 	     
 		  } catch (RestClientResponseException e) {
@@ -77,7 +79,7 @@ public class UserService {
 		  
 		  try {
 			  didItCreate = restTemplate
-	              .exchange(BASE_URL + "user" + "?username=" + username + "&?password=" + password, HttpMethod.GET, makeUserEntity(), boolean.class)
+	              .exchange(BASE_URL + "user" + "?username=" + username + "&?password=" + password, HttpMethod.POST, makeUserEntity(), boolean.class)
 	              .getBody();
 	     
 		  } catch (RestClientResponseException e) {

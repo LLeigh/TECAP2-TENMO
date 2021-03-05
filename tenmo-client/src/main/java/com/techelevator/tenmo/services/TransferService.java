@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpEntity;
@@ -17,7 +18,7 @@ import com.techelevator.tenmo.models.Transfer;
 
 public class TransferService {
 	
-	private static String AUTH_TOKEN = ""; 
+	public static String AUTH_TOKEN = ""; 
 	private String BASE_URL;
 	private RestTemplate restTemplate= new RestTemplate();
 
@@ -27,7 +28,7 @@ public class TransferService {
 	
 	
 	public List<Transfer> viewTransfers(long id) throws TransferServiceException {
-		List<Transfer> transfers = null;
+		List<Transfer> transfers = new ArrayList<>();
 //		Transfer[] transfers = null;
 			
 		try {
@@ -64,8 +65,8 @@ public class TransferService {
 		
 		try {
 		      canSendBucks = restTemplate
-              .exchange(BASE_URL + "accounts" + "?accountFrom=" + accountFrom + "&?accountTo=" + accountTo + 
-            		  "&?amount=" + amount, HttpMethod.POST, makeTransferEntity(transfer), boolean.class)
+              .exchange(BASE_URL + "transfers" + "?accountFrom=" + accountFrom + "&accountTo=" + accountTo + 
+            		  "&amount=" + amount, HttpMethod.POST, makeTransferEntity(transfer), boolean.class)
               .getBody();
 			
 		} catch (RestClientResponseException ex) {

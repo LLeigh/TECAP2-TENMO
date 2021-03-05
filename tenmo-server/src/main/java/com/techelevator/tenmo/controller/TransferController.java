@@ -27,8 +27,9 @@ public class TransferController {
 		private TransferDAO dao;
 		private AccountDAO daoAccount;
 		
-		public TransferController(TransferDAO transferDao) {
+		public TransferController(TransferDAO transferDao, AccountDAO daoAccount) {
 			this.dao = transferDao;
+			this.daoAccount = daoAccount;
 		}
 		
 		
@@ -48,7 +49,7 @@ public class TransferController {
 		public boolean sendBucks(@RequestParam int accountFrom, @RequestParam int accountTo, @RequestParam BigDecimal amount) {	
 			long userId = (int)accountFrom;
 			
-			if (amount.compareTo(daoAccount.getBalance(userId)) >= 0) { 
+			if (amount.compareTo(daoAccount.getBalance(userId)) <= 0) { 
 			return dao.sendBucks(accountFrom, accountTo, amount);
 			} 
 			return false;

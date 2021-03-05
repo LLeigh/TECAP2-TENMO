@@ -41,7 +41,8 @@ public class AccountService {
 		  Account account = new Account();
 		  try {
 			      restTemplate
-			              .exchange(BASE_URL + "accounts/" + userId, HttpMethod.PUT, makeAccountEntity(account), Account.class)
+			              .exchange(BASE_URL + "accounts/" + userId + "?amount=" + amount, HttpMethod.PUT, makeAccountEntity(account), Account.class)
+			             
 			              .getBody();
 			    } catch (RestClientResponseException e) {
 			      throw new AccountServiceException(e.getRawStatusCode() + " : " + e.getResponseBodyAsString());
