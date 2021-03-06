@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.techelevator.tenmo.dao.AccountDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.User;
 
@@ -42,4 +40,9 @@ private UserDAO dao;
 	public boolean create(@RequestParam String username, @RequestParam String password){
 		return dao.create(username, password);
 	};
+	
+	@RequestMapping(path= "/name", method = RequestMethod.GET)
+	public String findUsernameById(long id) {
+		return dao.findUsernameById(id);
+	}
 }

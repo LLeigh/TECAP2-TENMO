@@ -38,10 +38,7 @@ public class TransferService {
 						for(Transfer t : transferArray) {
 						transferList.add(t);
 						}
-			for(Transfer t : transferArray) {
-				transferList.add(t);
-						
-			}	 
+ 
 		} catch (RestClientResponseException ex) {
 			throw new TransferServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		}

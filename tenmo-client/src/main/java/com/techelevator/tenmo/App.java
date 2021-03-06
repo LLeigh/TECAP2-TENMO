@@ -14,6 +14,7 @@ import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.tenmo.services.TransferServiceException;
 import com.techelevator.tenmo.services.UserService;
+import com.techelevator.tenmo.services.UserServiceException;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -92,13 +93,22 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
-	private void viewTransferHistory() {
-		//accountService.getAccountId(currentUser.getUser().getId()
+	private void viewTransferHistory()  {
+
 		 try {
 		 List<Transfer> userTransfers = transferService.viewTransfers(currentUser.getUser().getId());	
+		 String toUsername = "";
 		 for (Transfer t: userTransfers) {
-				
-				System.out.println(t);
+			 
+			 long toAccountId = (long)t.getAccountTo();
+			 String fromUsername = currentUser.getUser().getUsername();
+			 try {
+			 toUsername = userService.findUsernameById(toAccountId);
+			 } catch (UserServiceException ex) {
+				 ex.printStackTrace();
+			 }
+							
+				System.out.println("Transfer ID: " + t.getTransferId()+ " Account From: " + fromUsername + " Account To: " + toUsername + " Amount: " + t.getAmount());
 			}
 		  	 
 		 } catch (TransferServiceException e) {
@@ -106,6 +116,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		 }
 		 int chosenId = console.getUserInputInteger("\n" + "Choose Transfer ID to see details");
 		 try {
+
 			System.out.println(transferService.viewTransferById(chosenId));
 		 } catch (Exception e) {
 			 System.out.println("Error with view transfer id method.");
@@ -124,9 +135,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				
 				System.out.println(u);
 			}
-			Integer toAccountUser = console.getUserInputInteger("Please select recipient's number"); //takes user input ----> userId (toAccount)
+			Integer toAccountUser = console.getUserInputInteger("Please select recipient's number");
 			String sendAmount = console.getUserInput("How much money would you like to send? ");
-			BigDecimal amount = new BigDecimal(sendAmount); //returns string and puts it in Big Decimal to pass in as amount
+			BigDecimal amount = new BigDecimal(sendAmount); 
 			transferService.sendBucks(currentUser.getUser().getId(), toAccountUser, amount);
 			accountService.updateBalance(amount, toAccountUser);
 			BigDecimal negative = new BigDecimal("-1.00");
