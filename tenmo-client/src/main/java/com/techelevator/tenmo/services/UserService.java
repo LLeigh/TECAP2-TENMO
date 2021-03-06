@@ -88,6 +88,21 @@ public class UserService {
 		  return didItCreate;
 	  };
 	  
+	  public String findUsernameById(long id) throws UserServiceException {
+		  String username = "";
+		  
+		  try {
+			  username = restTemplate
+		              .exchange(BASE_URL + "user/name" + "?id=" + id, HttpMethod.GET, makeAuthEntity(), String.class)
+		              .getBody();
+		     
+			  } catch (RestClientResponseException e) {
+				  throw new UserServiceException(e.getRawStatusCode() + " : " + e.getResponseBodyAsString());
+			  }
+			  return username;
+		  
+	  }
+	  
 		//Helper Method
 	  private HttpEntity<User> makeUserEntity(User user) {
 		    HttpHeaders headers = new HttpHeaders();

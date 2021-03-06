@@ -24,7 +24,7 @@ public class User {
 	
 	   public String toString() {
 		      return 
-		              "id=" + id +
-		              "  username=" + username + "  ";
+		              "ID:" + id +
+		              "Username:" + username + "  ";
 		   }
 }

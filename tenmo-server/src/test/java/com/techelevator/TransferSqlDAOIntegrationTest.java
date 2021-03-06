@@ -89,16 +89,6 @@ public class TransferSqlDAOIntegrationTest {
 		assertEquals(user1TransfersBefore + 1, user1TransfersAfter);
 		assertEquals(expected, testTransfer.getAmount());
 	}
-	
-	@Test
-	public void viewTransferById_happy_path() {
-		
-	}
-	
-	@Test 
-	public void sendBucks_creates_new_transfer() {
-		
-	}
 
 
 }
