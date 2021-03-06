@@ -31,7 +31,7 @@ public class UserService {
 		  
 		  try {
 			      User [] list = restTemplate
-			              .exchange(BASE_URL + "user/all", HttpMethod.GET, makeUserEntity(), User [].class)
+			              .exchange(BASE_URL + "user/all", HttpMethod.GET, makeAuthEntity(), User[].class)
 			              .getBody();
 			      for(User u : list) {
 						userList.add(u);
@@ -50,7 +50,7 @@ public class UserService {
 		  
 		  try {
 			  user = restTemplate
-	              .exchange(BASE_URL + "user/" + username, HttpMethod.GET, makeUserEntity(), User.class)
+	              .exchange(BASE_URL + "user/" + username, HttpMethod.GET, makeAuthEntity(), User.class)
 	              .getBody();
 	     
 		  } catch (RestClientResponseException e) {
@@ -65,7 +65,7 @@ public class UserService {
 		  
 		  try {
 			  num = restTemplate
-	              .exchange(BASE_URL + "user" + "?username=" + username, HttpMethod.GET, makeUserEntity(), Integer.class)
+	              .exchange(BASE_URL + "user" + "?username=" + username, HttpMethod.GET, makeAuthEntity(), Integer.class)
 	              .getBody();
 	     
 		  } catch (RestClientResponseException e) {
@@ -79,7 +79,7 @@ public class UserService {
 		  
 		  try {
 			  didItCreate = restTemplate
-	              .exchange(BASE_URL + "user" + "?username=" + username + "&?password=" + password, HttpMethod.POST, makeUserEntity(), boolean.class)
+	              .exchange(BASE_URL + "user" + "?username=" + username + "&?password=" + password, HttpMethod.POST, makeAuthEntity(), boolean.class)
 	              .getBody();
 	     
 		  } catch (RestClientResponseException e) {
@@ -97,7 +97,7 @@ public class UserService {
 		    return entity;
 		  }
 	//Helper Method
-	  private HttpEntity makeUserEntity() {
+	  private HttpEntity makeAuthEntity() {
 		    HttpHeaders headers = new HttpHeaders();
 		    headers.setBearerAuth(AUTH_TOKEN);
 		    HttpEntity entity = new HttpEntity<>(headers);

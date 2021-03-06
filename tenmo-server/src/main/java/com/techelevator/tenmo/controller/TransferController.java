@@ -38,8 +38,8 @@ public class TransferController {
 			return dao.viewTransfers(id);			
 		}
 		
-		@RequestMapping (path = "/{transferId}", method = RequestMethod.GET)
-		public Transfer viewTransferById(@PathVariable int transferId) {
+		@RequestMapping (path = "", method = RequestMethod.GET)
+		public Transfer viewTransferById(@RequestParam int transferId) {
 			return dao.viewTransferById(transferId);
 
 		}

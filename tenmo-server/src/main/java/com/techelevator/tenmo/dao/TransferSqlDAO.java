@@ -46,6 +46,7 @@ public class TransferSqlDAO implements TransferDAO {
 				"WHERE transfer_id = ?;";
 		
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetTransfer, transferId);
+		results.next();
 		Transfer transfer = mapRowToTransfer(results);
 		return transfer;
 	}

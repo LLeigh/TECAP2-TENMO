@@ -33,5 +33,15 @@ public class AccountSqlDAO implements AccountDAO {
 		String addToUser = "UPDATE accounts SET balance = ((SELECT balance FROM accounts WHERE user_id = ?) + ?) WHERE user_id = ?";
 		jdbcTemplate.update(addToUser, userId, amount, userId);
 	}
-
+	
+	@Override
+	public int getAccountId(long userId) {
+		String sql = "SELECT account_id FROM account WHERE user_id = ?";
+		SqlRowSet oneRow = jdbcTemplate.queryForRowSet(sql, userId);
+		oneRow.next();
+		long accountIdLong = oneRow.getInt("user_id");
+		int accountId = (int)accountIdLong;
+	
+		return accountId;
+	}
 }
