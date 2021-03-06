@@ -40,5 +40,11 @@ public class AccountController {
 		dao.updateBalance(amount, userId);
 	};
 	
+	@RequestMapping(path = "/find", method = RequestMethod.GET)
+	public int getAccountId(long userId) {
+		return dao.getAccountId(userId);
+		
+	}
+	
 
 }

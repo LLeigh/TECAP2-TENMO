@@ -50,6 +50,19 @@ public class AccountService {
 			   
 	  }
 	  
+	  public int getAccountId(long userId) throws AccountServiceException{
+		  int accountId = 0;
+		  try {
+		      accountId = restTemplate
+		              .exchange(BASE_URL + "accounts/find" + "?userId=" + userId, HttpMethod.GET, makeAuthEntity(), Integer.class)
+		              .getBody();
+		    } catch (RestClientResponseException e) {
+		      throw new AccountServiceException(e.getRawStatusCode() + " : " + e.getResponseBodyAsString());
+		    }
+		  
+		  return accountId;
+	  }
+	  
 	  
 	//Helper Method
 	  private HttpEntity<Account> makeAccountEntity(Account account) {

@@ -48,8 +48,9 @@ public class Transfer {
 	}	
 	   public String toString() {
 		      return 
-		    		   " TranferId:  " + transferId + " TranferTypeId:  " + transferTypeId + " TransferStatusId:  " 
-		    		  + transferStatusId  + " AccountFrom:" + accountFrom + "AccountTo" + accountTo;
+		    		   "Transfer ID: " + transferId + "  Transfer Type ID: " + transferTypeId + "  Transfer Status ID: " 
+		    		  + transferStatusId  + "  Account From: " + accountFrom + "  Account To: " + accountTo + "  Amount: $" + amount;
+		      
 		   }
 
 }

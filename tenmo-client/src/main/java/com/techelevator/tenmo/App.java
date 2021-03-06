@@ -93,18 +93,24 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		
+		//accountService.getAccountId(currentUser.getUser().getId()
 		 try {
 		 List<Transfer> userTransfers = transferService.viewTransfers(currentUser.getUser().getId());	
 		 for (Transfer t: userTransfers) {
 				
 				System.out.println(t);
 			}
-		 System.out.println(userTransfers);	 	 
+		  	 
 		 } catch (TransferServiceException e) {
-			 
+			 e.printStackTrace();
 		 }
-		
+		 int chosenId = console.getUserInputInteger("\n" + "Choose Transfer ID to see details");
+		 try {
+			System.out.println(transferService.viewTransferById(chosenId));
+		 } catch (Exception e) {
+			 System.out.println("Error with view transfer id method.");
+			 e.printStackTrace();
+		 }
 	}
 	
 	
